@@ -4,6 +4,14 @@
 #include <string.h>
 #include <app.h>
 
+static inline void cleanupServerIPs(struct config *config) {
+	for (int i = 0; i < config->num_servers; i++) {
+		free(config->server_ips[i]);
+	}
+	free(config->server_ips);
+	free(config->gateway_ip);
+}
+
 int main() {
 	struct config *config = readConfig("config.txt");
 	(void)config;
@@ -55,7 +63,7 @@ int main() {
 	struct connection *conn = createServer(config->port, config);
 	startServer(conn, config);
 
-
+	cleanupServerIPs(config);
 	free(config);
 	free(conn);
 }
