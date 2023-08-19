@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -42,6 +43,6 @@ struct connection {
 
 extern struct config *readConfig(const char *filename);
 // Function to create a socket and bind it to the listen port
-extern struct connection *createServer(int port);
+extern struct connection *createServer(int port, struct config *config);
 extern void startServer(struct connection *conn, struct config *config);
-extern void sendSyncCommand(const char *server_ip, int port);
+extern bool sendSyncCommand(const char *server_ip, int port, bool fatal);

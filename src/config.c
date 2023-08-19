@@ -86,6 +86,8 @@ struct config *readConfig(const char *filename) {
 			fprintf(stderr, "Unknown config key: %s\n", key);
 			exit(ERR_CONFIG);
 		}
+		free(key);
+		free(value);
 	}
 
 	fclose(file);

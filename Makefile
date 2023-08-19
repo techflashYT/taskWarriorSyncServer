@@ -12,9 +12,9 @@ src+=$(shell find -O3 src -name '*.h')
 
 obj=$(patsubst src/%.c,build/%.o, $(src))
 
-all: bin/twSyncServer
+all: bin/twSyncApp
 
-bin/twSyncServer: $(obj)
+bin/twSyncApp: $(obj)
 	@mkdir -p $(@D)
 	@$(info LD    $(subst build/,,$^) ==> $@)
 	@$(LD) $(LDFLAGS) -o $@ $^

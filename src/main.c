@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <app.h>
@@ -48,9 +49,10 @@ int main() {
 	}
 	free(serverIpsStr);
 	if (config->mode == MODE_CLIENT) {
-		sendSyncCommand(config->gateway_ip, config->port);
+		sendSyncCommand(config->gateway_ip, config->port, true);
+		return 0;
 	}
-	struct connection *conn = createServer(config->port);
+	struct connection *conn = createServer(config->port, config);
 	startServer(conn, config);
 
 
