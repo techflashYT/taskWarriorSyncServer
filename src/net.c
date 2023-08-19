@@ -127,7 +127,12 @@ static void handleConnection(struct connection *conn, struct config *config) {
 			else if (config->mode == MODE_GATEWAY) {
 				for (int i = 0; i < config->num_servers; i++) {
 					printf("Syncing to %s\r\n", config->server_ips[i]);
-					sendSyncCommand(config->server_ips[i], config->port, true);
+					if (!sendSyncCommand(config->server_ips[i], config->port, false)) {
+						// TODO: Log the failure somewhere permanent.
+						fprintf(stderr, "Error syncing to %s\r\n", config->server_ips[i]);
+
+						continue;
+					}
 					if (recv(conn->sock, msg, sizeof(msg), 0) <= 0) {
 						perror("Error receiving sync response");
 						// close(conn->sock);
