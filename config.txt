@@ -5,7 +5,9 @@
 #    ==> 2 - Server mode.   Be listening for connections on `port`.  Sync when told to.
 #    ==> 3 - Gateway mode.  Be listening for connections on `port`.
 #              Send the sync command to all `server_ips` on `port.
-mode = 3
+#    NOTE: If not specified here, it must be specified on the command line.
+#    NOTE: Even if specified here, it *can* be overriden by the value on the command line.
+#mode = 3
 
 # `port` - The port to connect to / listen on.
 # Used in modes: Gateway, Server, Client
