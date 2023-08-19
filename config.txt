@@ -1,0 +1,36 @@
+# `mode` - The mode of the app.
+# Used in modes: N/A
+# Options:
+#    ==> 1 - Client mode.   Connect to `gateway_ip` with `port` (see below), and tell it to sync.
+#    ==> 2 - Server mode.   Be listening for connections on `port`.  Sync when told to.
+#    ==> 3 - Gateway mode.  Be listening for connections on `port`.
+#              Send the sync command to all `server_ips` on `port.
+mode = 1
+
+# `port` - The port to connect to / listen on.
+# Used in modes: Gateway, Server, Client
+# Options:
+#    ==> Any number from 0 - 65535.
+#    NOTE: Any port below 1024 would require root access to work, which is probably not what you want.
+port = 5446
+
+# `timeout` - The maximum amount of time to wait for a connection to be established, in miliseconds.
+# Used in modes: Gateway, Client
+# Options:
+#    ==> Any number within the range of an `int` on your system.
+timeout = 10
+
+# `server_ips` - A list of IP addresses to connect to for a gateway.
+# Used in modes: Gateway
+# Options:
+#    ==> A comma-separated list of IP addresses to connect to, if the current mode is to be a gateway.
+#    NOTE: The list can contain whitespace after the comma.
+#    NOTE: It cannot yet resolve domain names, but this is planned!.
+server_ips = 192.168.0.2
+
+# `gateway_ip` - The IP address of the gateway to connect to.
+# Used in modes: Client
+# Options:
+#    ==> A single IP address of the gateway to connect to.
+#    NOTE: Domain resolving is planned, but not yet added.
+gateway_ip = 192.168.0.17
