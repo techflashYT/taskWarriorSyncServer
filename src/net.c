@@ -50,6 +50,7 @@ void startServer(struct connection *conn, struct config *config) {
             perror("Error allocating memory for client connection");
             continue;
         }
+        client_conn->addrlen = sizeof(client_conn->address);
         client_conn->sock = accept(conn->sock, (struct sockaddr *) &client_conn->address, &client_conn->addrlen);
         if (client_conn->sock < 0) {
             perror("Error accepting connection");
@@ -63,7 +64,7 @@ void startServer(struct connection *conn, struct config *config) {
 
 // Function to perform the handshake and handle commands
 static void handleConnection(struct connection *conn, struct config *config) {
-        char msg[MAX_MSG_LEN];
+    char msg[MAX_MSG_LEN];
 
     // Perform the handshake
     if (recv(conn->sock, msg, sizeof(msg), 0) < 0) {

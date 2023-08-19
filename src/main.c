@@ -50,7 +50,7 @@ int main() {
 	if (config->mode == MODE_CLIENT) {
 		sendSyncCommand(config->gateway_ip, config->port);
 	}
-	struct connection *conn = createServer(8080);
+	struct connection *conn = createServer(config->port);
 	startServer(conn, config);
 
 
