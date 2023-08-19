@@ -17,7 +17,7 @@ struct config *readConfig(const char *filename) {
 		exit(ERR_CONFIG);
 	}
 	// set default values
-	config->mode = MODE_CLIENT;
+	config->mode = 0xAA;
 	config->port = 8080;
 	config->timeout = 5;
 	config->server_ips = NULL;
@@ -92,4 +92,33 @@ struct config *readConfig(const char *filename) {
 
 	fclose(file);
 	return config;
+}
+
+void printConfig(struct config *config) {
+	char *modeStr = "???";
+	if (config->mode == MODE_CLIENT) {modeStr = "client";}
+	else if (config->mode == MODE_SERVER) {modeStr = "server";}
+	else if (config->mode == MODE_GATEWAY) {modeStr = "gateway";}
+
+	char srvIpsStr[2048] = " [ ";
+	for (int i = 0; i < config->num_servers; i++) {
+		strcat(srvIpsStr, config->server_ips[i]);
+		strcat(srvIpsStr, ", ");
+	}
+	if (srvIpsStr[strlen(srvIpsStr) - 2] == ',') {
+		srvIpsStr[strlen(srvIpsStr) - 2] = '\0';
+	};
+	strcat(srvIpsStr, " ]");
+	printf(
+		"=== Config ===\r\n"
+		"mode: %s\r\n"
+		"port: %d\r\n"
+		"timeout: %d\r\n"
+		"server_ips: %s\r\n"
+		"gateway_ip: %s\r\n"
+		"=== End Config ===\r\n",
+		modeStr, config->port,
+		config->timeout, srvIpsStr,
+		config->gateway_ip
+	);
 }

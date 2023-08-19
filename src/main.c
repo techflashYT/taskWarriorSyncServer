@@ -4,6 +4,7 @@
 #include <string.h>
 #include <app.h>
 
+
 static inline void cleanupServerIPs(struct config *config) {
 	for (int i = 0; i < config->num_servers; i++) {
 		free(config->server_ips[i]);
@@ -12,58 +13,43 @@ static inline void cleanupServerIPs(struct config *config) {
 	free(config->gateway_ip);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+	int ret = 0;
 	struct config *config = readConfig("config.txt");
-	(void)config;
-
-	char *modeStr;
-	if (config->mode == MODE_CLIENT) {
-		modeStr = "client";
+	
+	if (config == NULL) {
+		fputs("Config is null.... what\r\n", stderr);
+		exit(ERR_CONFIG);
 	}
-	else if (config->mode == MODE_SERVER) {
-		modeStr = "server";
+	if (config->mode == 0xAA) {
+		if (argc != 2) {
+			// never got set in config, and not on the command line.  How are we supposed to know what mode to run in???
+			fprintf(stderr, "Usage: %s (mode)\r\nPlease see config.txt for `mode` options.\r\nYou can specify a mode either in the config, or on the command line, but you must have at least 1.\r\n", argv[0]);
+			exit(ERR_WRONG_MODE);
+		}
+		// not in config, but we got it on the cmdline!
+		config->mode = atoi(argv[1]);
 	}
-	else if (config->mode == MODE_GATEWAY) {
-		modeStr = "gateway";
-	}
-
-	char *serverIpsStr = malloc(2048);
-	strcpy(serverIpsStr, "[ ");
-	for (int i = 0; i < config->num_servers; i++) {
-		strcat(serverIpsStr, config->server_ips[i]);
-		strcat(serverIpsStr, ", ");
-	}
-	if (serverIpsStr[strlen(serverIpsStr) - 2] == ',') {
-		serverIpsStr[strlen(serverIpsStr) - 2] = '\0';
-	};
-	strcat(serverIpsStr, " ]");
-	printf(
-		"=== Config ===\r\n"
-		"mode: %s\r\n"
-		"port: %d\r\n"
-		"timeout: %d\r\n"
-		"server_ips: %s\r\n"
-		"gateway_ip: %s\r\n"
-		"=== End Config ===\r\n",
-		modeStr,
-		config->port,
-		config->timeout,
-		serverIpsStr,
-		config->gateway_ip
-	);
 	if (config->num_servers == 0) {
 		fputs("No servers configured!  Aborting.\r\n", stderr);
 		exit(ERR_CONFIG);
 	}
-	free(serverIpsStr);
+
+	printConfig(config);
+
 	if (config->mode == MODE_CLIENT) {
-		sendSyncCommand(config->gateway_ip, config->port, true);
-		return 0;
+		ret = 0;
+		if (!sendSyncCommand(config->gateway_ip, config->port, true)) {
+			ret = ERR_SYNC;
+		};
+		goto leave;
 	}
 	struct connection *conn = createServer(config->port, config);
 	startServer(conn, config);
+	free(conn);
 
+leave:
 	cleanupServerIPs(config);
 	free(config);
-	free(conn);
+	return ret;
 }

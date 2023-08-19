@@ -22,6 +22,7 @@
 #define ERR_TIMEOUT 2
 #define ERR_WRONG_MODE 3
 #define ERR_CONFIG 4
+#define ERR_SYNC 5
 
 // Config structure
 struct config {
@@ -42,6 +43,7 @@ struct connection {
 
 
 extern struct config *readConfig(const char *filename);
+extern void printConfig(struct config *config);
 // Function to create a socket and bind it to the listen port
 extern struct connection *createServer(int port, struct config *config);
 extern void startServer(struct connection *conn, struct config *config);
